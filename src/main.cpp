@@ -11,6 +11,11 @@
 // FIXME - Definir esses valores de acordo com o pdf
 #define NX 5
 #define NY 4
+
+#define TESTE_1 0.5
+#define TESTE_2 0.25
+#define TESTE_3 0.125
+
 #endif
 
 // Se estamos testando o segundo caso (o de capacitores)
