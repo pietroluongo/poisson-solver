@@ -1,6 +1,6 @@
 all:
 	@echo "Compiling main..."
-	@g++ main.cpp -o main
+	@g++ src/main.cpp -o main
 
 clean:
 	@rm main
