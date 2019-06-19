@@ -47,6 +47,14 @@ double vedexisipsilon(double x, double y) {
     return (x*(10-x) * y * (5-y))/10;
 }
 
+void writeOutputToFile() {
+    FILE* f;
+    f = fopen("teste.txt", "w");
+    for(int i = 0; i < 21*11; i++) {
+        fprintf(f, "%lf\n",vp[i]);
+    }
+}
+
 void printStuff() {
     printf("f = \n\n");
     for(int i = 0; i <= 10; i++) {
@@ -74,7 +82,13 @@ void printStuff() {
     }
     printf("\nfp:\n");
     for(int i = 0; i < 21*11; i++) {
-        printf("%d - [%lf]\n", i, fp[i]);
+        printf("%3d - [%lf]\n", i, fp[i]);
+    }
+    printf("\n");
+
+    printf("\nvp:\n");
+    for(int i = 0; i < 21*11; i++) {
+        printf("%3d - [%lf]\n", i, vp[i]);
     }
     printf("\n");
 }
@@ -112,10 +126,7 @@ int main() {
         vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
 
-    printf("\nvp:\n");
-    for(int i = 0; i < nx*ny; i++) {
-        printf("%3d - [%lf]\n", i, vp[i]);
-    }
-
+    printStuff();
+    writeOutputToFile();
     return 0;
 }
