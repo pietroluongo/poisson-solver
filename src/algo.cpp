@@ -17,6 +17,8 @@ double hy = 0.5;
 double fp[21*11];
 double vp[21*11] = {};
 
+double ground[21*11];
+
 int getNx() {
     return 1 + (abs(dom_x1 - dom_x0) / hx);
 }
@@ -94,10 +96,20 @@ int main() {
         }
     }
     // SOR
+    int vecSize = nx*ny;
     for(int iter = 0; iter < MAX_ITER; iter++) {
-        for(int i = 0; i < nx*ny; i++) {
-            vp[i] = (w/e) * (fp[0] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + (1-w) * vp[i];
+        // 1ª iter
+        vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]);
+        for(int i = 1; i < vecSize-1; i++) {
+            if(i < nx)
+                vp[i] = (w/e) * (fp[i] - d * 0 - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]);
+            else if(i+nx > vecSize)
+                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + (1-w) * vp[i]; 
+            else
+                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + (1-w) * vp[i];
         }
+        // Última iter
+        vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
 
     printf("\nvp:\n");
