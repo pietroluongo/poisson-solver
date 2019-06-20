@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
+
 
 #define MAX_ITER 10
 
@@ -53,6 +55,12 @@ void writeOutputToFile() {
     for(int i = 0; i < 21*11; i++) {
         fprintf(f, "%lf\n",vp[i]);
     }
+    fclose(f);
+    f = fopen("ground.txt", "w");
+    for(int i = 0; i < 21*11; i++) {
+        fprintf(f, "%lf\n", ground[i]);
+    }
+    fclose(f);
 }
 
 void printStuff() {
@@ -126,7 +134,37 @@ int main() {
         vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
 
-    printStuff();
+    // Casos de contorno
+    for(int i = 0; i < nx; i++) {
+        for(int j = 0; j < ny; j++) {
+            if(i == 0 || j == 0 || j == ny-1 || i == nx-1)
+                vp[i*ny + j] = 0;
+            if(i * hy == 2.5) {
+                vp[i*ny + j] = efedexiseipsilom_contorno(i*hx, j*hy);
+            }
+        }
+    }
+    
+    std::cout << "ITERADO" << std::endl;
+    for(int i = 0; i < nx; i++) {
+        printf("%3lf -> ", i * hy);
+        for(int j = 0; j < ny; j++) {
+            printf("%3lf ", vp[i * ny + j]);
+        }
+        printf("\n");
+    }
+
+
+
+
+    posAtual = 0;
+    for(int i = 0; i < nx; i++) {
+        for(int j = 0; j < ny; j++) {
+            ground[posAtual++] = vedexisipsilon(i * hx, j * hy);
+        }
+    }
+
+    //printStuff();
     writeOutputToFile();
     return 0;
 }
