@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-#define MAX_ITER 1000
+#define MAX_ITER 100
 
 // Domínio
 int dom_x0 = 0;
