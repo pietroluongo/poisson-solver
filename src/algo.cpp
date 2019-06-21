@@ -111,7 +111,7 @@ double getErro() {
             idx = i;
         }
     }
-    printf("MAX ERRO: %lf\nComparing %lf and %lf, index %d (%d, %d)", max, ground[idx], vp[idx], idx, idx/11, idx%11);
+    printf("\nMAX ERRO: %lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/11, idx%11);
     return max;
 }
 
@@ -159,6 +159,7 @@ int main() {
         }
     }
     
+    printf("\nVP:\n");
     for(int i = 0; i < nx; i++) {
         printf("%3lf -> ", i * hy);
         for(int j = 0; j < ny; j++) {
@@ -167,15 +168,32 @@ int main() {
         printf("\n");
     }
 
-
-
-
     posAtual = 0;
     for(int i = 0; i < nx; i++) {
         for(int j = 0; j < ny; j++) {
             ground[posAtual++] = vedexisipsilon(i * hx, j * hy);
         }
     }
+
+    printf("\nExata:\n");
+    for(int i = 0; i < nx; i++) {
+        printf("%3lf -> ", i * hy);
+        for(int j = 0; j < ny; j++) {
+            printf("%3lf ", ground[i * ny + j]);
+        }
+        printf("\n");
+    }
+
+    printf("\nDiferencial:\n");
+    for(int i = 0; i < nx; i++) {
+        printf("%3lf -> ", i * hy);
+        for(int j = 0; j < ny; j++) {
+            printf("%3lf ", ground[i * ny + j] - vp[i * ny + j]);
+        }
+        printf("\n");
+    }
+
+
 
     //printStuff();
     //writeOutputToFile();
