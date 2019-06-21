@@ -158,13 +158,22 @@ int main() {
         }
     }
 
-printf("matriz (%dx%d)\n", ny, nx);
+printf("matriz fp (%dx%d)\n", ny, nx);
 
     for(int i = 0; i < nx*ny; i++) {
         if(i % nx == 0)
             printf("\n");
-        printf("%.2lf ", ground[i]);
+        printf("%08.5lf ", fp[i]);
     }
+
+printf("\n\nmatriz ground (%dx%d)\n", ny, nx);
+
+    for(int i = 0; i < nx*ny; i++) {
+        if(i % nx == 0)
+            printf("\n");
+        printf("%08.5lf ", ground[i]);
+    }
+
 
 
 cout << endl;
