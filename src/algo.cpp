@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-#define MAX_ITER 10
+#define MAX_ITER 1000
 
 // Domínio
 int dom_x0 = 0;
@@ -101,6 +101,20 @@ void printStuff() {
     printf("\n");
 }
 
+double getErro() {
+    double max = -1.0;
+    int idx = -1;
+    for(int i = 0; i < 21*11; i++) {
+        double diff = abs(ground[i]-vp[i]);
+        if(diff > max) {
+            max = diff;
+            idx = i;
+        }
+    }
+    printf("MAX ERRO: %lf\nComparing %lf and %lf, index %d (%d, %d)", max, ground[idx], vp[idx], idx, idx/11, idx%11);
+    return max;
+}
+
 int main() {
     int nx = getNx();
     int ny = getNy();
@@ -137,15 +151,14 @@ int main() {
     // Casos de contorno
     for(int i = 0; i < nx; i++) {
         for(int j = 0; j < ny; j++) {
-            if(i == 0 || j == 0 || j == ny-1 || i == nx-1)
-                vp[i*ny + j] = 0;
             if(i * hy == 2.5) {
                 vp[i*ny + j] = efedexiseipsilom_contorno(i*hx, j*hy);
             }
+            if(i == 0 || j == 0 || j == ny-1 || i == nx-1)
+                vp[i*ny + j] = 0;
         }
     }
     
-    std::cout << "ITERADO" << std::endl;
     for(int i = 0; i < nx; i++) {
         printf("%3lf -> ", i * hy);
         for(int j = 0; j < ny; j++) {
@@ -165,6 +178,7 @@ int main() {
     }
 
     //printStuff();
-    writeOutputToFile();
+    //writeOutputToFile();
+    getErro();
     return 0;
 }
