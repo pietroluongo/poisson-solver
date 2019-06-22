@@ -214,7 +214,7 @@ int main() {
                 vp[i] = 0;
                 continue;
             }
-            if((i / nx ) * 0.5 == 2.5) {
+            if((i / nx ) * hy == 2.5) {
                 vp[i] = fp[i];
                 continue;
             }
