@@ -55,12 +55,12 @@ double vedexisipsilon(double x, double y) {
 void writeOutputToFile() {
     FILE* f;
     f = fopen("teste.txt", "w");
-    for(int i = 0; i < 21*11; i++) {
+    for(int i = 0; i < nx*ny; i++) {
         fprintf(f, "%lf\n",vp[i]);
     }
     fclose(f);
     f = fopen("ground.txt", "w");
-    for(int i = 0; i < 21*11; i++) {
+    for(int i = 0; i < ny*nx; i++) {
         fprintf(f, "%lf\n", ground[i]);
     }
     fclose(f);
@@ -92,13 +92,13 @@ void printStuff() {
         printf("\n");
     }
     printf("\nfp:\n");
-    for(int i = 0; i < 21*11; i++) {
+    for(int i = 0; i < nx*ny; i++) {
         printf("%3d - [%lf]\n", i, fp[i]);
     }
     printf("\n");
 
     printf("\nvp:\n");
-    for(int i = 0; i < 21*11; i++) {
+    for(int i = 0; i < nx*ny; i++) {
         printf("%3d - [%lf]\n", i, vp[i]);
     }
     printf("\n");
@@ -107,14 +107,14 @@ void printStuff() {
 double getErro() {
     double max = -1.0;
     int idx = -1;
-    for(int i = 0; i < 21*11; i++) {
+    for(int i = 0; i < nx*ny; i++) {
         double diff = abs(ground[i]-vp[i]);
         if(diff > max) {
             max = diff;
             idx = i;
         }
     }
-    printf("\nMAX ERRO: %.32lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/11, idx%11);
+    printf("\nMAX ERRO: %.32lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/ny, idx%ny);
     return max;
 }
 
@@ -146,7 +146,7 @@ void debug() {
 
     printf("\nDiferencial\n");
     for(int i = 0; i < nx*ny; i++) {
-        if(i%21 == 0)
+        if(i%nx == 0)
             printf("\n");
         printf("%08.5lf ", ground[i] - vp[i]);
     }
@@ -214,7 +214,7 @@ int main() {
                 vp[i] = 0;
                 continue;
             }
-            if((i / 21 ) * 0.5 == 2.5) {
+            if((i / nx ) * 0.5 == 2.5) {
                 vp[i] = fp[i];
                 continue;
             }
