@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-#define MAX_ITER 1000
+#define MAX_ITER 10000
 
 using namespace std;
 
@@ -40,8 +40,6 @@ double getOmegaIdeal(int nx, int ny) {
 }
 
 double efedexiseipsilom(double x, double y) {
-    double q1 = x * (10-x);
-    double q2 = y * (5-y);
     return ((x * (10-x)) + (y * (5-y)))/5.0;
 }
 
@@ -167,6 +165,12 @@ int main() {
     e = 2 * ((1 / (hx*hx)) + (1/(hy*hy)));
     printf("a = %lf b = %lf c = %lf d = %lf e = %lf\n\n", a, b, c, d, e);
     
+    int a0 = a;
+    int b0 = b;
+    int c0 = c;
+    int d0 = d;
+    int e0 = e;
+
     int posAtual = 0;
 
     // Normal order
@@ -190,21 +194,40 @@ int main() {
         }
     }
 
-    // SOR - OK
+    // SOR - OKNOTOK!
+    // int vecSize = nx*ny;
+    // for(int iter = 0; iter < MAX_ITER; iter++) {
+    //     // 1ª elemento do vetor
+    //     vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]); // OK!
+    //     for(int i = 1; i < vecSize-1; i++) {
+    //         if(i < nx)
+    //             vp[i] = (w/e) * (fp[i] - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]); // OK!
+    //         else if(i > vecSize - nx)
+    //              vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + ((1-w) * vp[i]); // OK! 
+    //         else
+    //             vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]); // OK!
+    //     }
+    //     // Última elemento do vetor
+    //     vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
+    // }
+
     int vecSize = nx*ny;
     for(int iter = 0; iter < MAX_ITER; iter++) {
-        // 1ª elemento do vetor
-        vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]); // OK!
-        for(int i = 1; i < vecSize-1; i++) {
-            if(i < nx)
-                vp[i] = (w/e) * (fp[i] - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]); // OK!
-            else if(i > vecSize - nx)
-                 vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + ((1-w) * vp[i]); // OK! 
-            else
-                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]); // OK!
+        a = a0;
+        b = b0;
+        c = c0;
+        d = d0;
+        for(int i = 0; i < vecSize; i++) {
+            if(i%nx == 1)       // OK!
+                b = 0;
+            if(i < nx)          // OK!
+                d = 0;
+            if(i%nx == 0)       // OK!
+                a = 0;
+            if((ny-1)*nx < i)   // OK?
+                c = 0;
+            vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]);
         }
-        // Última elemento do vetor
-        vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
 
     // Casos de contorno - OK!
