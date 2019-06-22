@@ -114,7 +114,7 @@ double getErro() {
             idx = i;
         }
     }
-    printf("\nMAX ERRO: %lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/11, idx%11);
+    printf("\nMAX ERRO: %.32lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/11, idx%11);
     return max;
 }
 
@@ -158,7 +158,7 @@ int main() {
     nx = getNx(); // 21
     ny = getNy(); // 11
     double w = getOmegaIdeal(nx, ny);
-    printf("nx = %d ny = %d w = %lf\n\n", nx, ny, w);
+    printf("nx = %d ny = %d w = %lf niter = %d\n\n", nx, ny, w, MAX_ITER);
     double a, b, c, d, e;
     a = b = (-1.)/(hx*hx);
     c = d = (-1.)/(hy*hy);
@@ -202,33 +202,63 @@ int main() {
         }
     }
 
+    // SOR
     int vecSize = nx*ny;
     for(int iter = 0; iter < MAX_ITER; iter++) {
-        a = a0;
-        b = b0;
-        c = c0;
-        d = d0;
-        e = e0;
-        for(int i = 1; i <= vecSize; i++) {
-            int it = i-1;
-            // Condições de contorno
-            if((it / 11) * 0.5 == 2.5)
-                vp[it] = w * fp[it] + (1-w)* vp[it];
-            // Fronteira
-            if(it % nx == 0 || it % (nx) == (nx-1) || it<nx || (ny-1) * nx <i) {
-                vp[it] = w * fp[it] + (1-w)* vp[it];
+        // 1ª iter
+        //vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]);
+        vp[0] = 0;
+        for(int i = 1; i < vecSize-1; i++) {
+            // Contornos
+            if(i % nx == 0 || i % (nx) == (nx-1) || i<nx || (ny-1) * nx < i) {
+                vp[i] = 0;
+                continue;
             }
-            if(i%nx == 1)
-                b = 0;
+            if((i / 21 ) * 0.5 == 2.5) {
+                vp[i] = fp[i];
+                continue;
+            }
             if(i < nx)
-                d = 0;
-            if(i%nx == 0)
-                a = 0;
-            if((ny-1)*nx < i)
-                c = 0;
-            vp[it] = (w/e) * (fp[it] - d * vp[it-nx] - b*vp[it-1] - a * vp[it+1] - c * vp[it+nx]) + ((1-w) * vp[it]);
+                vp[i] = (w/e) * (fp[i] - d * 0 - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]);
+            else if(i+nx > vecSize)
+                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + (1-w) * vp[i]; 
+            else
+                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + (1-w) * vp[i];
         }
+        // Última iter
+        vp[vecSize-1] = 0;
+        //vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
+
+    // int vecSize = nx*ny;
+    // for(int iter = 0; iter < MAX_ITER; iter++) {
+    //     for(int i = 1; i <= vecSize; i++) {
+    //         a = a0;
+    //         b = b0;
+    //         c = c0;
+    //         d = d0;
+    //         int it = i-1;
+    //         // Condições de contorno
+    //         if((it / 11) * 0.5 == 2.5)
+    //             vp[it] = w * fp[it] + (1-w)* vp[it];
+    //         // Fronteira
+    //         if(it % nx == 0 || it % (nx) == (nx-1) || it<nx || (ny-1) * nx <i) {
+    //             vp[it] = w * fp[it] + (1-w)* vp[it];
+    //         }
+
+    //         if(it-nx)
+
+    //         if(i%nx == 1)
+    //             b = 0;
+    //         if(i < nx)
+    //             d = 0;
+    //         if(i%nx == 0)
+    //             a = 0;
+    //         if((ny-1)*nx < i)
+    //             c = 0;
+    //         vp[it] = (w/e) * (fp[it] - d * vp[it-nx] - b*vp[it-1] - a * vp[it+1] - c * vp[it+nx]) + ((1-w) * vp[it]);
+    //     }
+    // }
 
     // Casos de contorno - OK!
     // for(int j = 0; j < nx; j++) {
