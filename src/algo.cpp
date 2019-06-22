@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-#define MAX_ITER 100
+#define MAX_ITER 1000
 
 using namespace std;
 
@@ -22,6 +22,8 @@ double fp[21*11];
 double vp[21*11] = {};
 
 double ground[21*11];
+
+int nx, ny;
 
 int getNx() {
     return 1 + (abs(dom_x1 - dom_x0) / hx);
@@ -118,9 +120,38 @@ double getErro() {
     return max;
 }
 
+void debug() {
+    printf("matriz fp (%dx%d)\n", ny, nx);
+
+    for(int i = 0; i < nx*ny; i++) {
+        if(i % nx == 0)
+            printf("\n");
+        printf("%08.5lf ", fp[i]);
+    }
+
+    printf("\n\nmatriz ground (%dx%d)\n", ny, nx);
+
+    for(int i = 0; i < nx*ny; i++) {
+        if(i % nx == 0)
+            printf("\n");
+        printf("%08.5lf ", ground[i]);
+    }
+
+    printf("\n\nmatriz vp (%dx%d)\n", ny, nx);
+
+    for(int i = 0; i < nx*ny; i++) {
+        if(i % nx == 0)
+            printf("\n");
+        printf("%08.5lf ", vp[i]);
+    }
+    cout << endl;
+    
+    return;
+}
+
 int main() {
-    int nx = getNx(); // 21
-    int ny = getNy(); // 11
+    nx = getNx(); // 21
+    ny = getNy(); // 11
     double w = getOmegaIdeal(nx, ny);
     printf("nx = %d ny = %d w = %lf\n\n", nx, ny, w);
     double a, b, c, d, e;
@@ -129,13 +160,7 @@ int main() {
     e = 2 * ((1 / (hx*hx)) + (1/(hy*hy)));
     printf("a = %lf b = %lf c = %lf d = %lf e = %lf\n\n", a, b, c, d, e);
     
-    // Cálculo do fp (Column major)
     int posAtual = 0;
-    // for(int i = 0; i < nx; i++) {
-    //     for(int j = 0; j < ny; j++) {
-    //         fp[posAtual++] = efedexiseipsilom(i * hx, j * hy);
-    //     }
-    // }
 
     // Normal order
     // for(int i = 0; i < ny; i++) {
@@ -158,65 +183,44 @@ int main() {
         }
     }
 
-printf("matriz fp (%dx%d)\n", ny, nx);
-
-    for(int i = 0; i < nx*ny; i++) {
-        if(i % nx == 0)
-            printf("\n");
-        printf("%08.5lf ", fp[i]);
-    }
-
-printf("\n\nmatriz ground (%dx%d)\n", ny, nx);
-
-    for(int i = 0; i < nx*ny; i++) {
-        if(i % nx == 0)
-            printf("\n");
-        printf("%08.5lf ", ground[i]);
-    }
-
-
-
-cout << endl;
-exit(1);
-
-    // Cálculo da solução exata (Column Major)
-    // posAtual = 0;
-    // for(int i = 0; i < nx; i++) {
-    //     for(int j = 0; j < ny; j++) {
-    //         ground[posAtual++] = vedexisipsilon(i * hx, j * hy);
-    //     }
-    // }
-
-
-    // SOR
+    // SOR - OK
     int vecSize = nx*ny;
     for(int iter = 0; iter < MAX_ITER; iter++) {
         // 1ª elemento do vetor
-        vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]);
+        vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]); // OK!
         for(int i = 1; i < vecSize-1; i++) {
             if(i < nx)
-                vp[i] = (w/e) * (fp[i] - d * 0 - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]);
-            else if(i+nx > vecSize)
-                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + (1-w) * vp[i]; 
+                vp[i] = (w/e) * (fp[i] - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]); // OK!
+            else if(i > vecSize - nx)
+                 vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + ((1-w) * vp[i]); // OK! 
             else
-                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + (1-w) * vp[i];
+                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]); // OK!
         }
         // Última elemento do vetor
         vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
 
-    // Casos de contorno
-    for(int i = 0; i < nx; i++) {
-        for(int j = 0; j < ny; j++) {
-            // y=2.5 -> Contorno
-            if(i * hy == 2.5) {
-                vp[i*ny + j] = efedexiseipsilom_contorno(i*hx, j*hy);
-            }
-            // Fronteira do retângulo -> Contorno
-            if(i == 0 || j == 0 || j == ny-1 || i == nx-1)
-                vp[i*ny + j] = 0;
+    // Casos de contorno - OK!
+    for(int j = 0; j < nx; j++) {
+        for(int i = 0; i < ny; i++) {
+            if(i * hy == 2.5)
+                vp[nx * i + j] = efedexiseipsilom_contorno(j * hx, i * hy);
+            if(i == 0 || j == 0 || j == nx-1 || i == ny-1)
+                vp[nx * i + j] = 0;
         }
     }
+
+    // for(int i = 0; i < nx; i++) {
+    //     for(int j = 0; j < ny; j++) {
+    //         // y=2.5 -> Contorno
+    //         if(i * hy == 2.5) {
+    //             vp[i*ny + j] = efedexiseipsilom_contorno(i*hx, j*hy);
+    //         }
+    //         // Fronteira do retângulo -> Contorno
+    //         if(i == 0 || j == 0 || j == ny-1 || i == nx-1)
+    //             vp[i*ny + j] = 0;
+    //     }
+    // }
     
     // printf("\nVP:\n");
     // for(int i = 0; i < nx; i++) {
@@ -227,21 +231,21 @@ exit(1);
     //     printf("\n");
     // }
 
-    printf("\nVP - CORRIGIDO\n");
-    for(int j = 0; j < nx; j++) {
-        for(int i = 0; i < ny; i++) {
-            printf("%3lf ", vp[i * ny + j]);            
-        }
-        printf("\n");
-    }
+    // printf("\nVP - CORRIGIDO\n");
+    // for(int j = 0; j < nx; j++) {
+    //     for(int i = 0; i < ny; i++) {
+    //         printf("%3lf ", vp[i * ny + j]);            
+    //     }
+    //     printf("\n");
+    // }
 
-    printf("\nExata:\n");
-    for(int j = 0; j < ny; j++) {
-        for(int i = 0; i < ny; i++) {
-            printf("%3lf ", ground[i * ny + j]);
-        }
-        printf("\n");
-    }
+    // printf("\nExata:\n");
+    // for(int j = 0; j < ny; j++) {
+    //     for(int i = 0; i < ny; i++) {
+    //         printf("%3lf ", ground[i * ny + j]);
+    //     }
+    //     printf("\n");
+    // }
 
     // printf("\nDiferencial:\n");
     // for(int i = 0; i < nx; i++) {
@@ -253,9 +257,9 @@ exit(1);
     // }
 
 
-
+    debug();
     //printStuff();
     //writeOutputToFile();
-    //getErro();
+    getErro();
     return 0;
 }
