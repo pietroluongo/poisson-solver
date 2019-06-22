@@ -4,7 +4,9 @@
 #include <iostream>
 
 
-#define MAX_ITER 10000
+#define MAX_ITER 1000
+
+#define MAX_SIZE 10000
 
 using namespace std;
 
@@ -18,10 +20,10 @@ double hx = 0.5;
 double hy = 0.5;
 
 // fp tem tamanho nx * ny
-double fp[21*11];
-double vp[21*11] = {};
+double fp[MAX_SIZE];
+double vp[MAX_SIZE] = {};
 
-double ground[21*11];
+double ground[MAX_SIZE];
 
 int nx, ny;
 
