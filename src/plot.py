@@ -1,54 +1,108 @@
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import numpy as np
 from matplotlib import colors
 from pprint import pprint
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
-def main():
-    f = open('data.txt', 'r')
-    # plt.plot(arr)
-    # plt.show()
-    print('Plotting...')
-    return
 
 def load_data():
-    f = open('data.txt', 'r')
+    f = open('teste.txt', 'r')
     data = f.readlines()
     fdata = []
     for q in data:
         fdata.append(float(q[:-1]))
     arr = np.array(fdata)
-    # arr = arr.reshape((11, 21))
+    arr = arr.reshape((11, 21))
     # print(arr)
-    print(arr.shape)
+    # print(arr.shape)
+    # print(arr)
     return arr
     
+def load_data2():
+    f = open('ground.txt', 'r')
+    data = f.readlines()
+    fdata = []
+    for q in data:
+        fdata.append(float(q[:-1]))
+    arr = np.array(fdata)
+    arr = arr.reshape((11, 21))
+    # print(arr)
+    # print(arr.shape)
+    # print(arr)
+    return arr
 
-def main2():
-    # generate 2 2d grids for the x & y bounds
-    y, x = np.meshgrid(np.linspace(0, 10, 100), np.linspace(0, 5, 100))
+def main3():
+    data = load_data()
 
-    z = (1 - x / 2. + x ** 5 + y ** 3) * np.exp(-x ** 2 - y ** 2)
-    # q = np.array(z)
-    # pprint(q.shape)
-    # pprint(z[0])
-    # exit()
-    # x and y are bounds, so z should be the value *inside* those bounds.
-    # Therefore, remove the last value from the z array.
-    # z = z[:-1, :-1]
-    # z_min, z_max = -np.abs(z).max(), np.abs(z).max()
-    z = load_data()
-    z_min, z_max = -np.abs(z).max(), np.abs(z).max()
+    xs = range(0, 21)
+    ys = range(0, 11)
+
+    xs_labels = []
+    ys_labels = []
+    for i in xs:
+        xs_labels.append(i * 0.5)
+        ys_labels.append(i * 0.5)
+
+    print(xs_labels)
+    print(ys_labels)
 
     fig, ax = plt.subplots()
+    im = ax.imshow(data)
 
-    # c = ax.pcolormesh(x, y, z, cmap='RdBu', vmin=z_min, vmax=z_max)
-    ax.set_title('pcolormesh')
-    # set the limits of the plot to the limits of the data
-    ax.axis([x.min(), x.max(), y.min(), y.max()])
-    # fig.colorbar(c, ax=ax)
+    # We want to show all ticks...
+    ax.set_xticks(np.arange(len(xs)))
+    ax.set_yticks(np.arange(len(ys)))
+    # ... and label them with the respective list entries
+    ax.set_xticklabels(xs_labels)
+    ax.set_yticklabels(ys_labels)
+
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+            rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
+    # for i in range(len(ys)):
+    #     for j in range(len(xs)):
+    #         text = ax.text(j, i, data[i, j],
+    #                     ha="center", va="center", color="w")
+
+    ax.set_title("Calculado")
+    fig.tight_layout()
+    plt.show()
+
+def main_3d():
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+
+    # Make data.
+    X = np.arange(0, 10.5, 0.5)
+    Y = np.arange(0, 5.5, 0.5)
+    X, Y = np.meshgrid(X, Y)
+
+    R = np.sqrt(X**2 + Y**2)
+    Z = np.sin(R)
+    Q = load_data()
+    print(Z.shape)
+    print(Q.shape)
+ #   exit()
+
+#    Z = load_data2()
+
+    # Plot the surface.
+    surf = ax.plot_surface(X, Y, Q, cmap=cm.jet,
+                        linewidth=0, antialiased=False)
+
+    # Customize the z axis.
+    # ax.set_zlim(-1.01, 1.01)
+    # ax.zaxis.set_major_locator(LinearLocator(10))
+    # ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+
+    # Add a color bar which maps values to colors.
+    fig.colorbar(surf, shrink=0.5, aspect=5)
 
     plt.show()
-    return
 
 if __name__ == '__main__':
-    main2()
+    main_3d()

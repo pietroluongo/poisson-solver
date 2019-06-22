@@ -42,12 +42,12 @@ double getOmegaIdeal(int nx, int ny) {
 double efedexiseipsilom(double x, double y) {
     double q1 = x * (10-x);
     double q2 = y * (5-y);
-    return (1.0/5.0) * (q1 + q2);
+    return ((x * (10-x)) + (y * (5-y)))/5.0;
 }
 
 double efedexiseipsilom_contorno(double x, double y) {
-    printf("\nContornando com x = %lf\n", x);
-    return 0.625*x*(10-x);
+    //printf("\nContornando com x = %lf\n", x);
+    return (0.625)*x*(10-x);
 }
 
 double vedexisipsilon(double x, double y) {
@@ -145,7 +145,14 @@ void debug() {
         printf("%08.5lf ", vp[i]);
     }
     cout << endl;
-    
+
+    printf("\nDiferencial\n");
+    for(int i = 0; i < nx*ny; i++) {
+        if(i%21 == 0)
+            printf("\n");
+        printf("%08.5lf ", ground[i] - vp[i]);
+    }
+    cout << endl;
     return;
 }
 
@@ -259,7 +266,7 @@ int main() {
 
     debug();
     //printStuff();
-    //writeOutputToFile();
     getErro();
+    writeOutputToFile();
     return 0;
 }
