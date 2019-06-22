@@ -6,7 +6,6 @@ from pprint import pprint
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
-
 def load_data():
     f = open('teste.txt', 'r')
     data = f.readlines()
@@ -14,7 +13,7 @@ def load_data():
     for q in data:
         fdata.append(float(q[:-1]))
     arr = np.array(fdata)
-    arr = arr.reshape((11, 21))
+    arr = arr.reshape((41, 81))
     # print(arr)
     # print(arr.shape)
     # print(arr)
@@ -36,14 +35,14 @@ def load_data2():
 def main3():
     data = load_data()
 
-    xs = range(0, 21)
-    ys = range(0, 11)
+    xs = range(0, 81)
+    ys = range(0, 41)
 
     xs_labels = []
     ys_labels = []
     for i in xs:
-        xs_labels.append(i * 0.5)
-        ys_labels.append(i * 0.5)
+        xs_labels.append(i * 0.125)
+        ys_labels.append(i * 0.125)
 
     print(xs_labels)
     print(ys_labels)
@@ -77,8 +76,8 @@ def main_3d():
     ax = fig.gca(projection='3d')
 
     # Make data.
-    X = np.arange(0, 10.5, 0.5)
-    Y = np.arange(0, 5.5, 0.5)
+    X = np.arange(0, 10.125, 0.125)
+    Y = np.arange(0, 5.125, 0.125)
     X, Y = np.meshgrid(X, Y)
 
     R = np.sqrt(X**2 + Y**2)
@@ -105,4 +104,5 @@ def main_3d():
     plt.show()
 
 if __name__ == '__main__':
+    main3()
     main_3d()
