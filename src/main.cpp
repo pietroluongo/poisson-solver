@@ -24,6 +24,13 @@ int main() {
     dados.setValFunc(vedexisipsilon);
     dados.addContorno(efedexiseipsilom_contorno);
     dados.process();
-    dados.debug();
+    dados.writeOutputData();
+    dados.resize(0.25,0.25);
+    dados.process();
+    dados.writeOutputData();
+    dados.resize(0.125, 0.125);
+    dados.process();
+    dados.writeOutputData();
+    //dados.debug();
     return 0;
 }
