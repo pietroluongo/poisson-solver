@@ -159,6 +159,23 @@ void poissonSOR::doSOR() {
     return;
 }
 
+void poissonSOR::writeOutputData() {
+    FILE* f;
+    char fname[MAX_FNAME_SIZE];
+    sprintf(fname, "output_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
+    f = fopen(fname,"w");
+    for(int i = 0; i < this->vecSize; i++) {
+        fprintf(f, "%lf\n",vp[i]);
+    }
+    fclose(f);
+    sprintf(fname, "ground_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
+    f = fopen(fname, "w");
+    for(int i = 0; i < this->vecSize; i++) {
+        fprintf(f, "%lf\n", ground[i]);
+    }
+    fclose(f);
+}
+
 void poissonSOR::debug() {
     printf("\n\nOBJ DEBUG STUFF BELOW!\n\n");
     printf("a = %d, b = %d, c = %d, d = %d, e = %d, w = %lf\n", this->a, this->b, this->c, this->d, this->e, this->w);

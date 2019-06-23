@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstdio>
 #include <vector>
+#include <string>
 
 #define MAX_SIZE 10000
 #define MAX_ITER 100
@@ -38,6 +39,7 @@ public:
     void debug();
     void process();
     void resize(double hx, double hy);
+    void writeOutputData();
 private:
     void calcFp();
     void checkContornos();
