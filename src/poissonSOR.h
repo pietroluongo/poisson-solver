@@ -4,7 +4,7 @@
 #include <string>
 
 #define MAX_SIZE 10000
-#define MAX_ITER 100
+#define MAX_ITER 30
 
 typedef struct Dominio dominio;
 

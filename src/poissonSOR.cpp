@@ -95,6 +95,7 @@ void poissonSOR::process() {
     if(this->grndFunc)
         this->calcExact();
     this->doSOR();
+    this->calcErr();
     return;
 }
 
