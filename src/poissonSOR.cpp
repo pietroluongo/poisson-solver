@@ -109,31 +109,48 @@ void poissonSOR::setValFunc(double (*f) (double, double)) {
 }
 
 void poissonSOR::doSOR() {
-    // SOR
     for(int iter = 0; iter < MAX_ITER; iter++) {
         // 1ª iter
-        //vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]);
-        vp[0] = 0;
+        switch (this->t){
+            case VALIDACAO:
+                vp[0] = 0;
+                break;
+            default:
+                vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]);
+                break;
+        }
         for(int i = 1; i < vecSize-1; i++) {
-            // Contornos
-            if(i % nx == 0 || i % (nx) == (nx-1) || i<nx || (ny-1) * nx < i) {
-                vp[i] = 0;
-                continue;
-            }
-            if((i / nx ) * hy == 2.5) {
-                vp[i] = fp[i];
-                continue;
+            switch(this->t) {
+                case VALIDACAO:
+                    // Contornos
+                    if(i % nx == 0 || i % (nx) == (nx-1) || i<nx || (ny-1) * nx < i) {
+                        vp[i] = 0;
+                        continue;
+                    }
+                    if((i / nx ) * hy == 2.5) {
+                        vp[i] = fp[i];
+                        continue;
+                    }
+                    break;
+                default:
+                    break;
             }
             if(i < nx)
-                vp[i] = (w/e) * (fp[i] - d * 0 - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]);
-            else if(i+nx > vecSize)
+                vp[i] = (w/e) * (fp[i] - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]);
+            else if(i+nx >= vecSize)
                 vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + (1-w) * vp[i]; 
             else
                 vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + (1-w) * vp[i];
         }
         // Última iter
-        vp[vecSize-1] = 0;
-        //vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
+        switch(this->t) {
+            case VALIDACAO:
+                vp[vecSize-1] = 0;
+                break;
+            default:
+                vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
+                break;
+        }
     }
     return;
 }
