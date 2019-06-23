@@ -21,6 +21,7 @@ poissonSOR::poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy) {
     this->resize(hx, hy);
     t = NIL;
     this->erro = 0;
+    this->grndFunc = NULL;
     return;
 }
 
@@ -80,6 +81,16 @@ void poissonSOR::checkContornos() {
             }
             break;
         case CAPACITORES:
+            for(int j = 0; j < nx; j++) {
+                for(int i = 0; i < ny; i++) {
+                    if(i * hy == 3.0)
+                        fp[nx*i + j] = 5;
+                    else if(i * hy == 2)
+                        fp[nx*i + j] = -5;
+                    if(i == 0 || j == 0 || j == nx-1 || i == nx - 1)
+                        fp[nx * i + j] = 0;
+                }
+            }
             break;
     }
     return;
@@ -121,6 +132,9 @@ void poissonSOR::doSOR() {
             case VALIDACAO:
                 vp[0] = 0;
                 break;
+            case CAPACITORES:
+                vp[0] = 0;
+                break;
             default:
                 vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]);
                 break;
@@ -138,6 +152,16 @@ void poissonSOR::doSOR() {
                         continue;
                     }
                     break;
+                case CAPACITORES:
+                    if(i % nx == 0 || i % (nx) == (nx-1) || i<nx || (ny-1) * nx < i) {
+                        vp[i] = 0;
+                        continue;
+                    }
+                    if((i / nx ) * hy == 3 || (i / nx ) * hy == 2) {
+                        vp[i] = fp[i];
+                        continue;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -151,6 +175,9 @@ void poissonSOR::doSOR() {
         // Última iter
         switch(this->t) {
             case VALIDACAO:
+                vp[vecSize-1] = 0;
+                break;
+            case CAPACITORES:
                 vp[vecSize-1] = 0;
                 break;
             default:
