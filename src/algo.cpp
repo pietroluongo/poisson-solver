@@ -231,47 +231,7 @@ int main() {
         vp[vecSize-1] = 0;
         //vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
-
-    // int vecSize = nx*ny;
-    // for(int iter = 0; iter < MAX_ITER; iter++) {
-    //     for(int i = 1; i <= vecSize; i++) {
-    //         a = a0;
-    //         b = b0;
-    //         c = c0;
-    //         d = d0;
-    //         int it = i-1;
-    //         // Condições de contorno
-    //         if((it / 11) * 0.5 == 2.5)
-    //             vp[it] = w * fp[it] + (1-w)* vp[it];
-    //         // Fronteira
-    //         if(it % nx == 0 || it % (nx) == (nx-1) || it<nx || (ny-1) * nx <i) {
-    //             vp[it] = w * fp[it] + (1-w)* vp[it];
-    //         }
-
-    //         if(it-nx)
-
-    //         if(i%nx == 1)
-    //             b = 0;
-    //         if(i < nx)
-    //             d = 0;
-    //         if(i%nx == 0)
-    //             a = 0;
-    //         if((ny-1)*nx < i)
-    //             c = 0;
-    //         vp[it] = (w/e) * (fp[it] - d * vp[it-nx] - b*vp[it-1] - a * vp[it+1] - c * vp[it+nx]) + ((1-w) * vp[it]);
-    //     }
-    // }
-
-    // Casos de contorno - OK!
-    // for(int j = 0; j < nx; j++) {
-    //     for(int i = 0; i < ny; i++) {
-    //         if(i * hy == 2.5)
-    //             vp[nx * i + j] = efedexiseipsilom_contorno(j * hx, i * hy);
-    //         if(i == 0 || j == 0 || j == nx-1 || i == ny-1)
-    //             vp[nx * i + j] = 0;
-    //     }
-    // }
-    debug();
+    // debug();
     getErro();
     writeOutputToFile();
     return 0;
