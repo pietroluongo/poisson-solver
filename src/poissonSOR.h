@@ -29,6 +29,7 @@ private:
     std::vector<double (*) (double, double)> contornos;
     type t;
     int vecSize;
+    double erro;
 public:
     poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy);
     ~poissonSOR();
@@ -40,9 +41,11 @@ public:
     void process();
     void resize(double hx, double hy);
     void writeOutputData();
+    double getErro() { return this->erro; };
 private:
     void calcFp();
     void checkContornos();
     void calcExact();
     void doSOR();
+    void calcErr();
 };

@@ -20,6 +20,7 @@ poissonSOR::poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy) {
     this->dom = new Dominio(x0, y0, x1, y1);
     this->resize(hx, hy);
     t = NIL;
+    this->erro = 0;
     return;
 }
 
@@ -157,6 +158,20 @@ void poissonSOR::doSOR() {
         }
     }
     return;
+}
+
+void poissonSOR::calcErr() {
+    double max = -1.0;
+    int idx = -1;
+    for(int i = 0; i < nx*ny; i++) {
+        double diff = abs(ground[i]-vp[i]);
+        if(diff > max) {
+            max = diff;
+            idx = i;
+        }
+    }
+    // printf("\nMAX ERRO: %.32lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/ny, idx%ny);
+    this->erro = max;
 }
 
 void poissonSOR::writeOutputData() {
