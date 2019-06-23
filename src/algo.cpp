@@ -231,7 +231,7 @@ int main() {
         vp[vecSize-1] = 0;
         //vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
     }
-    // debug();
+     debug();
     getErro();
     writeOutputToFile();
     return 0;

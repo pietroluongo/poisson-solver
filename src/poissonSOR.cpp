@@ -13,21 +13,27 @@ struct Dominio {
 };
 
 poissonSOR::poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy) {
-    this->w = getOmegaIdeal(nx, ny);
-    this->hx = hx;
-    this->hy = hy;
     this->dom = new Dominio(x0, y0, x1, y1);
-    this->nx = 1 + (abs(dom->x1 - dom->x0) / this->hx);
-    this->ny = 1 + (abs(dom->y1 - dom->y0) / this->hy);
-    this->a = this->b = (-1.)/(hx*hx);
-    this->c = this->d = (-1.)/(hy*hy);
-    this->e = 2. * ((1. / (hx*hx)) + (1./(hy*hy)));
+    this->resize(hx, hy);
     t = NIL;
     return;
 }
 
 poissonSOR::~poissonSOR() {
     delete(this->dom);
+    return;
+}
+
+void poissonSOR::resize(double hx, double hy) {
+    this->hx = hx;
+    this->hy = hy;
+    this->nx = 1 + (abs(dom->x1 - dom->x0) / this->hx);
+    this->ny = 1 + (abs(dom->y1 - dom->y0) / this->hy);
+    this->w = getOmegaIdeal(nx, ny);
+    this->a = this->b = (-1.)/(hx*hx);
+    this->c = this->d = (-1.)/(hy*hy);
+    this->e = 2. * ((1. / (hx*hx)) + (1./(hy*hy)));
+    this->vecSize = nx * ny;
     return;
 }
 
@@ -81,6 +87,20 @@ void poissonSOR::addContorno(double (*f) (double, double)) {
 
 void poissonSOR::process() {
     this->calcFp();
+    if(this->grndFunc)
+        this->calcExact();
+    this->doSOR();
+    return;
+}
+
+void poissonSOR::calcExact() {
+    // Column Major - Ground - OK!
+    for(int j = 0; j < nx; j++) {
+        for(int i = 0; i < ny; i++) {
+            ground[nx*i + j] = this->grndFunc(j * hx, i * hy);
+        }
+    }
+    return;
 }
 
 void poissonSOR::setValFunc(double (*f) (double, double)) {
@@ -88,10 +108,56 @@ void poissonSOR::setValFunc(double (*f) (double, double)) {
     return;
 }
 
+void poissonSOR::doSOR() {
+    // SOR
+    for(int iter = 0; iter < MAX_ITER; iter++) {
+        // 1ª iter
+        //vp[0] = (w/e) * (fp[0] - a * vp[1] - c * vp[nx]) + ((1-w) * vp[0]);
+        vp[0] = 0;
+        for(int i = 1; i < vecSize-1; i++) {
+            // Contornos
+            if(i % nx == 0 || i % (nx) == (nx-1) || i<nx || (ny-1) * nx < i) {
+                vp[i] = 0;
+                continue;
+            }
+            if((i / nx ) * hy == 2.5) {
+                vp[i] = fp[i];
+                continue;
+            }
+            if(i < nx)
+                vp[i] = (w/e) * (fp[i] - d * 0 - b * vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + ((1-w) * vp[i]);
+            else if(i+nx > vecSize)
+                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1]) + (1-w) * vp[i]; 
+            else
+                vp[i] = (w/e) * (fp[i] - d * vp[i-nx] - b*vp[i-1] - a * vp[i+1] - c * vp[i+nx]) + (1-w) * vp[i];
+        }
+        // Última iter
+        vp[vecSize-1] = 0;
+        //vp[vecSize-1] = (w/e) * (fp[vecSize-1] - d * vp[vecSize-1-nx] - b * vp[vecSize-1-1]) + (1-w) * vp[vecSize-1];
+    }
+    return;
+}
+
 void poissonSOR::debug() {
     printf("\n\nOBJ DEBUG STUFF BELOW!\n\n");
     printf("a = %d, b = %d, c = %d, d = %d, e = %d\n", this->a, this->b, this->c, this->d, this->e);
     printf("hx = %.4lf hy = %.4lf nx = %d ny = %d\n", this->hx, this->hy, this->nx, this->ny);
+
+
+    printf("This is of the type ");
+    switch(this->t) {
+        case VALIDACAO:
+            printf("Validation");
+            break;
+        case CAPACITORES:
+            printf("Capacitores");
+            break;
+        default:
+            printf("UNDEFINED");
+            break;
+    }
+    printf("\n");
+
     printf("matriz fp (%dx%d)\n", ny, nx);
 
     for(int i = 0; i < nx*ny; i++) {

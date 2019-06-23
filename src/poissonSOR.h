@@ -19,14 +19,15 @@ private:
     int a, b, c, d, e;
     int nx, ny;
     double w;
-    double fp[MAX_SIZE];
-    double vp[MAX_SIZE];
-    double ground[MAX_SIZE];
+    double fp[MAX_SIZE] = {};
+    double vp[MAX_SIZE] = {};
+    double ground[MAX_SIZE] = {};
     double hx, hy;
     double (*aproxFunc)(double, double);
     double (*grndFunc) (double, double);
     std::vector<double (*) (double, double)> contornos;
     type t;
+    int vecSize;
 public:
     poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy);
     ~poissonSOR();
@@ -36,7 +37,10 @@ public:
     void setValFunc(double (*f) (double, double));
     void debug();
     void process();
+    void resize(double hx, double hy);
 private:
     void calcFp();
     void checkContornos();
+    void calcExact();
+    void doSOR();
 };
