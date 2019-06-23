@@ -140,23 +140,23 @@ void poissonSOR::doSOR() {
 
 void poissonSOR::debug() {
     printf("\n\nOBJ DEBUG STUFF BELOW!\n\n");
-    printf("a = %d, b = %d, c = %d, d = %d, e = %d\n", this->a, this->b, this->c, this->d, this->e);
+    printf("a = %d, b = %d, c = %d, d = %d, e = %d, w = %lf\n", this->a, this->b, this->c, this->d, this->e, this->w);
     printf("hx = %.4lf hy = %.4lf nx = %d ny = %d\n", this->hx, this->hy, this->nx, this->ny);
 
 
-    printf("This is of the type ");
+    printf("\"this\" is of the type \"");
     switch(this->t) {
         case VALIDACAO:
-            printf("Validation");
+            printf("validation");
             break;
         case CAPACITORES:
-            printf("Capacitores");
+            printf("capacitores");
             break;
         default:
             printf("UNDEFINED");
             break;
     }
-    printf("\n");
+    printf("\"\n");
 
     printf("matriz fp (%dx%d)\n", ny, nx);
 
@@ -197,5 +197,5 @@ void poissonSOR::debug() {
 double getOmegaIdeal(int nx, int ny) {
     double t = cos(M_PI/nx) + cos(M_PI/ny);
     double t2 = t*t;
-    return (8 - sqrt(64-16*t2)/t2);
+    return ((8 - (sqrt(64-16*t2)))/t2);
 }
