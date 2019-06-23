@@ -1,6 +1,10 @@
 #include "poissonSOR.h"
 
+#define MAX_FNAME_SIZE 100
+
 double getOmegaIdeal(int nx, int ny);
+
+std::string typeToString(type t);
 
 struct Dominio {
     int x0, y0, x1, y1;
@@ -215,4 +219,18 @@ double getOmegaIdeal(int nx, int ny) {
     double t = cos(M_PI/nx) + cos(M_PI/ny);
     double t2 = t*t;
     return ((8 - (sqrt(64-16*t2)))/t2);
+}
+
+std::string typeToString(type t) {
+    switch(t) {
+        case VALIDACAO:
+            return "validacao";
+            break;
+        case CAPACITORES:
+            return "capacitores";
+            break;
+        default:
+            throw("Invalid type toString()ed!");
+            break;
+    }
 }
