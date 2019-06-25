@@ -44,6 +44,7 @@ void poissonSOR::resize(double hx, double hy) {
     for(int i = 0; i < this->vecSize; i++) {
         this->vp[i] = 0;
         this->ep[i] = 0;
+        this->ground_ep[i] = 0;
         this->fp[i] = 0;
     }
     return;
