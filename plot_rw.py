@@ -7,6 +7,15 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 import argparse
 
+def setStuff():
+    global mode, kind, hx, hy, step
+    p = 0.125
+    mode = 'aprox'
+    kind = 'cap'
+    hx = p
+    hy = p
+    step = str(int(p * 10000))
+
 ############################ DEFINES ###########################
 
 # mode = 'Exata, passo = 0.25'
@@ -16,50 +25,57 @@ genOutputsOnly = True
 
 outputFolder = 'imgs'
 
-# hmap_exat_val_5000.png
-
-mode = 'aprox'
-kind = 'cap'
-step = '1250'
-
 
 ########## Validacao ##########
 
 # Output step = 0.125
 ## inFname = 'output_SOR_validacao_0.1250_0.1250.txt'
+## inFname = 'elet_SOR_validacao_0.1250_0.1250.txt'
 
 # Output step = 0.25
 ## inFname = 'output_SOR_validacao_0.2500_0.2500.txt'
+## inFname = 'elet_SOR_validacao_0.2500_0.2500.txt'
 
 # Output step = 0.5
 ## inFname = 'output_SOR_validacao_0.5000_0.5000.txt'
+## inFname = 'elet_SOR_validacao_0.5000_0.5000.txt'
 
 # Ground step = 0.5
 ## inFname = 'ground_SOR_validacao_0.5000_0.5000.txt'
+## inFname = 'ground_e_SOR_validacao_0.5000_0.5000.txt'
 
 # Ground step = 0.25
 ## inFname = 'ground_SOR_validacao_0.2500_0.2500.txt'
+## inFname = 'ground_e_SOR_validacao_0.2500_0.2500.txt'
 
 # Ground step = 0.125
 ## inFname = 'output_SOR_validacao_0.1250_0.1250.txt'
+## inFname = 'ground_e_SOR_validacao_0.1250_0.1250.txt'
+
 
 ########### Capacitores ##########
 
 # Output Step = 0.5
 ## inFname = 'output_SOR_capacitores_0.5000_0.5000.txt'
+## inFname = 'elet_SOR_capacitores_0.5000_0.5000.txt'
 
 # Output Step = 0.25
-##inFname = 'output_SOR_capacitores_0.2500_0.2500.txt'
+## inFname = 'output_SOR_capacitores_0.2500_0.2500.txt'
+## inFname = 'elet_SOR_capacitores_0.2500_0.2500.txt'
 
 # Output Step = 0.125
-inFname = 'output_SOR_capacitores_0.1250_0.1250.txt'
-
+## inFname = 'output_SOR_capacitores_0.1250_0.1250.txt'
+## inFname = 'elet_SOR_capacitores_0.1250_0.1250.txt'
 
 # Dom - MUST MATCH PROBLEM!!!
 x0 = 0
 x1 = 10
 y0 = 0
 y1 = 5
+
+mode = 'null'
+kind = 'null'
+step = '-1'
 
 # Steps - MUST MATCH FILENAME!!!
 hx = 0.1250
@@ -68,6 +84,7 @@ hy = 0.1250
 #################################################################
 
 def main():
+    setStuff()
     inputFile = open(inFname, 'r')
     data = inputFile.readlines()
     formData = []
