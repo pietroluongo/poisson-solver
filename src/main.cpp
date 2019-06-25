@@ -29,15 +29,15 @@ int main() {
     dados.setValFunc(vxy);
     dados.addContorno(fxy_contorno);
     dados.process();
-    fprintf(f, "Processado validacao hx = 0.5, hy = 0.5, erro = %.15lf\n", dados.getErro());
+    fprintf(f, "Processado validacao hx = 0.5, hy = 0.5, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getErro(), dados.getErroEle());
     dados.writeOutputData();
     dados.resize(0.25,0.25);
     dados.process(); 
-    fprintf(f, "Processado validacao hx = 0.25, hy = 0.25, erro = %.15lf\n", dados.getErro());
+    fprintf(f, "Processado validacao hx = 0.25, hy = 0.25, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getErro(), dados.getErroEle());
     dados.writeOutputData();
     dados.resize(0.125, 0.125);
     dados.process();
-    fprintf(f, "Processado validacao hx = 0.125, hy = 0.125, erro = %.15lf\n", dados.getErro());
+    fprintf(f, "Processado validacao hx = 0.125, hy = 0.125, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getErro(), dados.getErroEle());
     dados.writeOutputData();
     dados = poissonSOR(0, 10, 0, 5, 0.5, 0.5);
     dados.setFXY(fxy_capacitor);
