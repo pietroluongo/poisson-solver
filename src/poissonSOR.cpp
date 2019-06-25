@@ -20,7 +20,8 @@ poissonSOR::poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy) {
     this->dom = new Dominio(x0, y0, x1, y1);
     this->resize(hx, hy);
     t = NIL;
-    this->erro = 0;
+    this->erro_vp = 0;
+    this->erro_ele = 0;
     this->grndFunc = NULL;
     return;
 }
@@ -108,11 +109,14 @@ void poissonSOR::addContorno(double (*f) (double, double)) {
 
 void poissonSOR::process() {
     this->calcFp();
-    if(this->grndFunc)
+    if(this->grndFunc) {
         this->calcExact();
+    }
     this->doSOR();
     this->calcCampElet();
+    this->calcCampElet_e();
     this->calcErr();
+    this->calcErrEle();
     return;
 }
 
@@ -198,14 +202,28 @@ void poissonSOR::calcErr() {
     double max = -1.0;
     int idx = -1;
     for(int i = 0; i < vecSize; i++) {
-        double diff = abs(ground[i]-vp[i]);
+        double diff = fabs(ground[i]-vp[i]);
         if(diff > max) {
             max = diff;
             idx = i;
         }
     }
     // printf("\nMAX ERRO: %.32lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/ny, idx%ny);
-    this->erro = max;
+    this->erro_vp = max;
+}
+
+void poissonSOR::calcErrEle() {
+    double max = -1.0;
+    int idx = -1;
+    for(int i = 0; i < vecSize; i++) {
+        double diff = fabs(ground_ep[i]-ep[i]);
+        if(diff >= max) {
+            max = diff;
+            idx = i;
+        }
+    }
+    //printf("\nMAX ERRO: %.32lf\nComparing %lf and %lf, index %d (%d, %d)\n", max, ground[idx], vp[idx], idx, idx/ny, idx%ny);
+    this->erro_ele = max;
 }
 
 void poissonSOR::writeOutputData() {
@@ -230,6 +248,14 @@ void poissonSOR::writeOutputData() {
             fprintf(f, "%lf\n", ground[i]);
         }
         fclose(f);
+
+        sprintf(fname, "%s/ground_e_SOR_%s_%.4lf_%.4lf.txt", outputFolder.c_str(), typeToString(t).c_str(), hx, hy);
+        f = fopen(fname, "w");
+        for(int i = 0; i < this->vecSize; i++) {
+            fprintf(f, "%lf\n", ground_ep[i]);
+        }
+        fclose(f);
+
     }
 }
 
@@ -317,4 +343,15 @@ void poissonSOR::calcCampElet() {
             ep[nx*i + j] = (dvdx + dvdy);
         }
     }
+    return;
+}
+
+void poissonSOR::calcCampElet_e() {
+    for(int j = 1; j < nx-1; j++) {
+        for(int i = 1; i < ny-1; i++) {
+            double dvdx = (ground[nx*i + (j + 1)] - ground[nx*i + (j-1)])/2*hx;
+            double dvdy = (ground[nx * (i+1) + j] - ground[nx*(i-1) + j])/2*hy;
+            ground_ep[nx*i + j] = (dvdx + dvdy);
+        }
+    }    return;
 }
