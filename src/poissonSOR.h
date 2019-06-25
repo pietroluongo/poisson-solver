@@ -5,7 +5,7 @@
 
 #define MAX_SIZE 10000
 
-#define STD_MAX_ITER 100
+#define STD_MAX_ITER 1000
 
 typedef struct Dominio dominio;
 
@@ -50,6 +50,7 @@ public:
     double getErroEle() { return this->erro_ele; };
     void setMaxIter(int it) {this->maxIter = it; };
     int getMaxIter() { return this->maxIter; };
+    void reset();
 private:
     void calcFp();
     void checkContornos();
@@ -59,4 +60,5 @@ private:
     void calcCampElet();
     void calcCampElet_e();
     void calcErrEle();
+    void gaussSeidel();
 };
