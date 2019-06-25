@@ -211,12 +211,14 @@ void poissonSOR::writeOutputData() {
         fprintf(f, "%lf\n",vp[i]);
     }
     fclose(f);
-    sprintf(fname, "ground_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
-    f = fopen(fname, "w");
-    for(int i = 0; i < this->vecSize; i++) {
-        fprintf(f, "%lf\n", ground[i]);
+    if(this->grndFunc) {
+        sprintf(fname, "ground_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
+        f = fopen(fname, "w");
+        for(int i = 0; i < this->vecSize; i++) {
+            fprintf(f, "%lf\n", ground[i]);
+        }
+        fclose(f);
     }
-    fclose(f);
 }
 
 void poissonSOR::debug() {
