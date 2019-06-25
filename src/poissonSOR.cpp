@@ -23,6 +23,7 @@ poissonSOR::poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy) {
     this->erro_vp = 0;
     this->erro_ele = 0;
     this->grndFunc = NULL;
+    this->maxIter = STD_MAX_ITER;
     return;
 }
 
@@ -137,7 +138,7 @@ void poissonSOR::setValFunc(double (*f) (double, double)) {
 }
 
 void poissonSOR::doSOR() {
-    for(int iter = 0; iter < MAX_ITER; iter++) {
+    for(int iter = 0; iter < maxIter; iter++) {
         // 1ª iter
         switch (this->t){
             case VALIDACAO:

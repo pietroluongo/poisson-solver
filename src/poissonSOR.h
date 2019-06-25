@@ -4,7 +4,8 @@
 #include <string>
 
 #define MAX_SIZE 10000
-#define MAX_ITER 300
+
+#define STD_MAX_ITER 100
 
 typedef struct Dominio dominio;
 
@@ -33,6 +34,7 @@ private:
     int vecSize;
     double erro_vp;
     double erro_ele;
+    int maxIter;
 public:
     poissonSOR(int x0, int x1, int y0, int y1, double hx, double hy);
     ~poissonSOR();
@@ -46,6 +48,8 @@ public:
     void writeOutputData();
     double getErro() { return this->erro_vp; };
     double getErroEle() { return this->erro_ele; };
+    void setMaxIter(int it) {this->maxIter = it; };
+    int getMaxIter() { return this->maxIter; };
 private:
     void calcFp();
     void checkContornos();
