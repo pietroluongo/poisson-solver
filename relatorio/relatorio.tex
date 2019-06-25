@@ -1,6 +1,11 @@
 \documentclass[oneside]{abntex2}
 \usepackage[utf8]{inputenc}
 \usepackage{courier}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subcaption}
+
 \title{Relatório do Segundo Trabalho de Algoritmos Numéricos}
 \author{Gabriel Pietroluongo Nascimento}
 \date{2019}
@@ -108,14 +113,232 @@ Outra dificuldade foi a implementação dos casos de contorno no algoritmo SOR, 
 
 \chapter{Conclusão} \label{sec_conc}
 \section{Resultados}
+Primeiramente, é necessário definir um número máximo de iterações realizadas. Para isso, foi realizado um estudo do erro em função da quantidade de iterações realizadas. O erro $V_p$ é dado pela equação \eqref{eqError}, e se refere ao resultado dos potenciais. O erro do campo elétrico é calculado de forma similar. Para cada teste, os valores de passo foram definidos como $h_x = h_y = p$, que será a nomenclatura utilizada na seção de conclusão do projeto. Com isso, as informações sobre o estudo feito estão dispostas abaixo:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c}
+    Número de iterações &Erro $V_p$ &Erro Campo Elétrico  \\
+    \hline
+    1 & 12.538790426611 & 2.907351752175 \\
+    10 & 0.191925842523 & 0.077129816371 \\
+    20 & 0.006512396150 & 0.004120976576 \\
+    30 & 0.000286799515 & 0.000160785244 \\
+    40 & 0.000001920159 & 0.000000852291 \\
+    50 & 0.000000014172 & 0.000000006622 \\
+    60 & 0.000000000092 & 0.000000000064 \\
+    70 & 0.000000000003 & 0.000000000001 \\
+    80 & 0.000000000000 & 0.000000000000 \\
+    90 & 0.000000000000 & 0.000000000000 \\
+    100 & 0.000000000000 & 0.000000000000 \\
+    \end{tabular}
+    \caption{Análise da validação com $p = 0.5$ e 12 casas decimais de precisão}
+    \label{tab:iter_p05}
+\end{table}
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c}
+    Número de iterações &Erro $V_p$ &Erro Campo Elétrico  \\
+    \hline
+    1 & 14.167268340547 & 1.738923212435 \\
+    15 & 0.460664261978 & 0.104090120849 \\
+    30 & 0.029494914215 & 0.006383550807 \\
+    45 & 0.002814599292 & 0.000791168413 \\
+    60 & 0.000243688702 & 0.000048514634 \\
+    75 & 0.000008360406 & 0.000001642513 \\
+    90 & 0.000000049337 & 0.000000010677 \\
+    105 & 0.000000001328 & 0.000000000288 \\
+    120 & 0.000000000080 & 0.000000000015 \\
+    135 & 0.000000000003 & 0.000000000001 \\
+    150 & 0.000000000000 & 0.000000000000 \\
+    \end{tabular}
+    \caption{Análise da validação com $p = 0.25$ e 12 casas decimais de precisão}
+    \label{tab:iter_p025}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c}
+    Número de iterações &Erro $V_p$ &Erro Campo Elétrico  \\
+    \hline
+    1 & 14.921764813058 & 0.928441841153 \\
+    30 & 0.504155358122 & 0.059665023973 \\
+    60 & 0.028215890019 & 0.002967654161 \\
+    90 & 0.003017518043 & 0.000355706314 \\
+    120 & 0.000220905358 & 0.000018882376 \\
+    150 & 0.000006437956 & 0.000000483484 \\
+    180 & 0.000000035639 & 0.000000003380 \\
+    210 & 0.000000001213 & 0.000000000083 \\
+    240 & 0.000000000052 & 0.000000000003 \\
+    270 & 0.000000000001 & 0.000000000000 \\
+    300 & 0.000000000000 & 0.000000000000 \\
+    \end{tabular}
+    \caption{Análise da validação com $p = 0.125$ e 12 casas decimais de precisão}
+    \label{tab:iter_p0125}
+\end{table}
+
+\newpage
+
+Analisando as tabelas apresentadas, é possível perceber que a partir de 300 iterações, o erro cometido é mínimo, mesmo com uma malha de alta resolução, com $p=0.125$. Portanto, os próximos resultados apresentados foram gerados utilizando esse número de iterações.
+
+Para gerar os resultados demonstrados abaixo, todos os casos de teste foram rodados com o número máximo de iterações definido em 70, conforme exposto acima. Nessas condições, os seguintes resultados foram obtidos:
+
+\begin{figure}[h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/cont_aprox_val_1250.png}
+    \caption{Aproximação do sistema com passo $p = 0.125$}
+    \label{cont_aprox_val_1250}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/cont_grnd_val_1250.png}
+    \caption{Resultado exato com passo $p = 0.125$}
+    \label{cont_exat_val_1250}
+  \end{subfigure}
+  \caption{Mapa de linhas equipotenciais do sistema de validação}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/hmap_aprox_val_1250.png}
+    \caption{Aproximação do sistema com passo $p = 0.125$}
+    \label{hmap_aprox_val_1250}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/hmap_grnd_val_1250.png}
+    \caption{Resultado exato com passo $p = 0.125$}
+    \label{hmap_exat_val_1250}
+  \end{subfigure}
+  \caption{Mapa bidimensional dos potenciais do sistema de validação}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/3d_aprox_val_1250.png}
+    \caption{Aproximação do sistema com passo $p = 0.125$}
+    \label{3d_aprox_val_1250}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/3d_grnd_val_1250.png}
+    \caption{Potenciais exatos com passo $p = 0.125$}
+    \label{3d_exat_val_1250}
+  \end{subfigure}
+  \caption{Modelo 3D dos potenciais do sistema de validação}
+\end{figure}
+
+\newpage
+
+Além da análise dos potenciais do sistema, também foi analisado o campo elétrico:
+
+\begin{figure}[h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/cont_aprox_val_elet_1250.png}
+    \caption{Aproximação do sistema com passo $p = 0.125$}
+    \label{3d_aprox_val_1250}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/cont_grnd_val_elet_1250.png}
+    \caption{Campo elétrico exato com passo $p = 0.125$}
+    \label{3d_exat_val_1250}
+  \end{subfigure}
+  \caption{Modelo 3D dos campos elétrico do sistema de validação}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/hmap_aprox_val_elet_1250.png}
+    \caption{Aproximação do sistema com passo $p = 0.125$}
+    \label{3d_aprox_val_1250}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/hmap_grnd_val_elet_1250.png}
+    \caption{Campo elétrico exato com passo $p = 0.125$}
+    \label{3d_exat_val_1250}
+  \end{subfigure}
+  \caption{Modelo 3D dos campos elétrico do sistema de validação}
+\end{figure}
+
+
+\begin{figure}[h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/3d_aprox_val_elet_1250.png}
+    \caption{Aproximação do sistema com passo $p = 0.125$}
+    \label{3d_aprox_val_1250}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{imgs/3d_grnd_val_elet_1250.png}
+    \caption{Campo elétrico exato com passo $p = 0.125$}
+    \label{3d_exat_val_1250}
+  \end{subfigure}
+  \caption{Modelo 3D do campo elétrico do sistema de validação}
+\end{figure}
+
+\newpage
+Além dos casos de validação expostos acima, também foi analisado o sistema de capacitores:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{imgs/cont_aprox_cap_1250.png}
+    \caption{Mapa de linhas equipotenciais do sistema de capacitores}
+    \label{cont_aprox_cap_1250}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{imgs/hmap_aprox_cap_1250.png}
+    \caption{Mapa de potencial do sistema de capacitores}
+    \label{cont_aprox_cap_1250}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{imgs/3d_aprox_cap_1250.png}
+    \caption{Mapa 3D do sistema de capacitores}
+    \label{cont_aprox_cap_1250}
+\end{figure}
+
+Além disso, analisando o campo elétrico do capacitor:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{imgs/cont_aprox_cap_elet_1250.png}
+    \caption{Mapa 3d do campo elétrico do sistema de capacitores}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{imgs/hmap_aprox_cap_elet_1250.png}
+    \caption{Mapa 3d do campo elétrico do sistema de capacitores}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{imgs/3d_aprox_cap_elet_1250.png}
+    \caption{Mapa 3d do campo elétrico do sistema de capacitores}
+    \label{fig:my_label}
+\end{figure}
+
+\newpage
+\newpage
+
+
 \section{Documentação da classe} \label{sec_doc}
 Abaixo consta a documentação do código desenvolvido ao longo do projeto. Conteúdo sobre algoritmos específicos se encontram dentro do próprio código, então o conteúdo abaixo é uma visão geral das propriedades da classe.
 \subsection{Defines}
 \begin{itemize}
     \item \texttt{MAX\_SIZE} \newline
         Tamanho máximo dos vetores $v, f, ground$. Deve ser \textbf{maior que} o valor de $n_x \cdot n_y$.
-    \item \texttt{MAX\_ITER} \newline
-        Máximo de iterações do método SOR.
+    \item \texttt{STD\_MAX\_ITER} \newline
+        Máximo de iterações padrão do método SOR. Esse é o valor a ser utilizado caso não seja especificado um valor manualmente.
 \end{itemize}
 \subsection{Estruturas auxiliares}
 \begin{itemize}
@@ -126,6 +349,8 @@ Abaixo consta a documentação do código desenvolvido ao longo do projeto. Cont
 \end{itemize}
 \subsection{Atributos}
 \begin{itemize}
+    \item \texttt{dominio* dom} \newline
+        Domínio do problema, definido pelo usuário.
     \item \texttt{int a, b, c, d, e} \newline
         Constantes do SOR, calculadas no construtor da classe.
     \item \texttt{int nx, ny} \newline
@@ -140,6 +365,8 @@ Abaixo consta a documentação do código desenvolvido ao longo do projeto. Cont
         Vetor $v$, composto pela solução encontrada para o sistema.
     \item \texttt{double ground} \newline
         Vetor $ground$, composto pela solução exata do sistema. Calculado apenas quando uma função exata é fornecida.
+    \item \texttt{double ground\_ep} \newline
+        Vetor $ground$, composto pela solução exata do sistema em relação ao campo elétrico. Calculado apenas quando uma função exata é fornecida.
     \item \texttt{double (*aproxFunc) (double, double)} \newline
         Função aproximante. Deve receber 2 parâmetros do tipo double e retornar um parâmetro do tipo double.
     \item \texttt{double (*grndFunc) (double double)} \newline
@@ -150,8 +377,20 @@ Abaixo consta a documentação do código desenvolvido ao longo do projeto. Cont
         Tipo do sistema. Deve ser definido no enum \texttt{type}.
     \item \texttt{int vecSize} \newline
         Tamanho do vetor, dado por $nx * ny$.
-    \item \texttt{double erro} \newline
-        Erro cometido ao fim do processamento. Calculado no método \texttt{calcErr()}.    
+    \item \texttt{double $erro\_{vp}$} \newline
+        Erro cometido ao fim do processamento. Calculado no método \texttt{calcErr()}.
+    \item \texttt{double erro\_ele} \newline
+        Erro cometido ao fim do processamento em relação ao campo elétrico. Calculado no método \texttt{calcErrEsle()}.
+    \item \texttt{int maxIter} \newline
+        Número máximo de iterações permitidas no método SOR.
 \end{itemize}
 \subsection{Métodos}
+reeeeeeeeee
+\subsection{Extendendo a funcionalidade da classe}
+Para extender a funcionalidade da classe, isto é, implementar novos tipos de problemas a serem resolvidos, primeiramente o cliente deve criar uma nova instância da classe \texttt{poissonSOR}, com o domínio e o passo desejados. Após isso, é necessário fornecer uma função de avaliação ao problema, isto é, a função $f(x, y)$ a ser calculada no domínio. Também é possível especificar um número máximo de iterações, por meio do método \texttt{setMaxIter()}. Caso não haja nenhum caso de contorno, isso já é o suficiente para utilizar a classe, chamando o método \texttt{process()} e analisando os resultados.
+Caso seja necessário utilizar casos de contorno, é necessário, primeiramente, definir um novo tipo de problema no \texttt{enum type}, no cabeçalho da classe. Após isso, o cliente deve adicionar as funções de contorno por meio do método \texttt{addContorno()}. Com isso, o vetor de funções de contorno é preenchido apropriadamente. Após isso, o cliente deve alterar, na implementação da classe, as funções \texttt{checkContornos()}, \texttt{typeToString()} e \texttt{doSOR()}, adicionando uma cláusula ao sistema de \texttt{switch} já implementado. Com isso, os casos de contorno serão considerados nos cálculos. 
+Assim, é possível implementar novos casos de teste rapidamente e de forma modularizada.
+\chapter{Apêndice}
+\section{Imagens}
+
 \end{document}
