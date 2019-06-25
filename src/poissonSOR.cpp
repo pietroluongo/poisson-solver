@@ -106,6 +106,7 @@ void poissonSOR::process() {
     if(this->grndFunc)
         this->calcExact();
     this->doSOR();
+    this->calcCampElet();
     this->calcErr();
     return;
 }
@@ -191,7 +192,7 @@ void poissonSOR::doSOR() {
 void poissonSOR::calcErr() {
     double max = -1.0;
     int idx = -1;
-    for(int i = 0; i < nx*ny; i++) {
+    for(int i = 0; i < vecSize; i++) {
         double diff = abs(ground[i]-vp[i]);
         if(diff > max) {
             max = diff;
@@ -211,6 +212,11 @@ void poissonSOR::writeOutputData() {
         fprintf(f, "%lf\n",vp[i]);
     }
     fclose(f);
+    sprintf(fname, "elet_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
+    f = fopen(fname, "w");
+    for(int i = 0; i < this->vecSize; i++) {
+        fprintf(f, "%lf\n", ep[i]);
+    }
     if(this->grndFunc) {
         sprintf(fname, "ground_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
         f = fopen(fname, "w");
@@ -294,5 +300,15 @@ std::string typeToString(type t) {
         default:
             throw("Invalid type toString()ed!");
             break;
+    }
+}
+
+void poissonSOR::calcCampElet() {
+    for(int j = 1; j < nx-1; j++) {
+        for(int i = 1; i < ny-1; i++) {
+            double dvdx = (vp[nx*i + (j + 1)] - vp[nx*i + (j-1)])/2*hx;
+            double dvdy = (vp[nx * (i+1) + j] - vp[nx*(i-1) + j])/2*hy;
+            ep[nx*i + j] = (dvdx + dvdy);
+        }
     }
 }

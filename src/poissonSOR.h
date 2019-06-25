@@ -23,6 +23,7 @@ private:
     double fp[MAX_SIZE] = {};
     double vp[MAX_SIZE] = {};
     double ground[MAX_SIZE] = {};
+    double ep[MAX_SIZE] = {};
     double hx, hy;
     double (*aproxFunc)(double, double);
     double (*grndFunc) (double, double);
@@ -48,4 +49,5 @@ private:
     void calcExact();
     void doSOR();
     void calcErr();
+    void calcCampElet();
 };
