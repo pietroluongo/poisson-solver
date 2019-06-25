@@ -28,31 +28,67 @@ int main() {
     dados.setType(VALIDACAO);
     dados.setValFunc(vxy);
     dados.addContorno(fxy_contorno);
-    dados.process();
-    fprintf(f, "Processado validacao hx = 0.5, hy = 0.5, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getErro(), dados.getErroEle());
-    dados.writeOutputData();
+    // dados.process();
+    // fprintf(f, "Processado validacao hx = 0.5, hy = 0.5, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getErro(), dados.getErroEle());
+    // dados.writeOutputData();
+    for(int i = 0; i < 100; i += 10) {
+        if(i == 0)
+            dados.setMaxIter(i+1);
+        else
+            dados.setMaxIter(i);
+        dados.process();
+        fprintf(f, "Processado validacao hx = 0.5, hy = 0.5, nIter = %d, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getMaxIter(), dados.getErro(), dados.getErroEle());
+
+    }
+
+
+
     dados.resize(0.25,0.25);
-    dados.process(); 
-    fprintf(f, "Processado validacao hx = 0.25, hy = 0.25, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getErro(), dados.getErroEle());
-    dados.writeOutputData();
+    // dados.process();
+    // fprintf(f, "Processado validacao hx = 0.25, hy = 0.25, nIter = %d, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getMaxIter(), dados.getErro(), dados.getErroEle());
+    // dados.writeOutputData();
+    for(int i = 0; i < 100; i += 10) {
+        if(i == 0)
+            dados.setMaxIter(i+1);
+        else
+            dados.setMaxIter(i);
+        dados.process();
+        fprintf(f, "Processado validacao hx = 0.25, hy = 0.25, nIter = %d, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getMaxIter(), dados.getErro(), dados.getErroEle());
+
+    }
+
+
+
+
     dados.resize(0.125, 0.125);
-    dados.process();
-    fprintf(f, "Processado validacao hx = 0.125, hy = 0.125, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getErro(), dados.getErroEle());
-    dados.writeOutputData();
-    dados = poissonSOR(0, 10, 0, 5, 0.5, 0.5);
-    dados.setFXY(fxy_capacitor);
-    dados.setType(CAPACITORES);
-    dados.process();
-    fprintf(f, "Processado capacitores hx = 0.5, hy = 0.5\n");
-    dados.writeOutputData();
-    dados.resize(0.25, 0.25);
-    dados.process();
-    fprintf(f, "Processado capacitores hx = 0.25, hy = 0.25\n");
-    dados.writeOutputData();
-    dados.resize(0.125, 0.125);
-    dados.process();
-    fprintf(f, "Processado capacitores hx = 0.125, hy = 0.125\n");    
-    dados.writeOutputData();
-    fclose(f);
+    // dados.process();
+    // fprintf(f, "Processado validacao hx = 0.125, hy = 0.125, nIter = %d, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getMaxIter(), dados.getErro(), dados.getErroEle());
+    // dados.writeOutputData();
+
+    for(int i = 0; i < 100; i += 10) {
+        if(i == 0)
+            dados.setMaxIter(i+1);
+        else
+            dados.setMaxIter(i);
+        dados.process();
+        fprintf(f, "Processado validacao hx = 0.125, hy = 0.125, nIter = %d, erro = %.15lf, erro campo eletrico = %.15lf\n", dados.getMaxIter(), dados.getErro(), dados.getErroEle());
+
+    }
+
+    // dados = poissonSOR(0, 10, 0, 5, 0.5, 0.5);
+    // dados.setFXY(fxy_capacitor);
+    // dados.setType(CAPACITORES);
+    // dados.process();
+    // fprintf(f, "Processado capacitores hx = 0.5, hy = 0.5\n");
+    // dados.writeOutputData();
+    // dados.resize(0.25, 0.25);
+    // dados.process();
+    // fprintf(f, "Processado capacitores hx = 0.25, hy = 0.25\n");
+    // dados.writeOutputData();
+    // dados.resize(0.125, 0.125);
+    // dados.process();
+    // fprintf(f, "Processado capacitores hx = 0.125, hy = 0.125\n");    
+    // dados.writeOutputData();
+    // fclose(f);
     return 0;
 }
