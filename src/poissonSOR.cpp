@@ -209,21 +209,22 @@ void poissonSOR::calcErr() {
 }
 
 void poissonSOR::writeOutputData() {
+    std::string outputFolder = "output";
     FILE* f;
     char fname[MAX_FNAME_SIZE];
-    sprintf(fname, "output_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
+    sprintf(fname, "%s/output_SOR_%s_%.4lf_%.4lf.txt", outputFolder.c_str(), typeToString(t).c_str(), hx, hy);
     f = fopen(fname,"w");
     for(int i = 0; i < this->vecSize; i++) {
         fprintf(f, "%lf\n",vp[i]);
     }
     fclose(f);
-    sprintf(fname, "elet_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
+    sprintf(fname, "%s/elet_SOR_%s_%.4lf_%.4lf.txt", outputFolder.c_str(), typeToString(t).c_str(), hx, hy);
     f = fopen(fname, "w");
     for(int i = 0; i < this->vecSize; i++) {
         fprintf(f, "%lf\n", ep[i]);
     }
     if(this->grndFunc) {
-        sprintf(fname, "ground_SOR_%s_%.4lf_%.4lf.txt", typeToString(t).c_str(), hx, hy);
+        sprintf(fname, "%s/ground_SOR_%s_%.4lf_%.4lf.txt", outputFolder.c_str(), typeToString(t).c_str(), hx, hy);
         f = fopen(fname, "w");
         for(int i = 0; i < this->vecSize; i++) {
             fprintf(f, "%lf\n", ground[i]);
